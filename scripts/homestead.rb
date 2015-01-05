@@ -46,12 +46,16 @@ class Homestead
     # Install All The Configured Nginx Sites
     settings["sites"].each do |site|
       config.vm.provision "shell" do |s|
+          s.args = [site["map"], site["to"]]
+          if (site.has_key?("index") && site["index"])
+            s.args.push(site["index"])
+          else 
+            s.args.push("index.html index.htm index.php")
+          end
           if (site.has_key?("hhvm") && site["hhvm"])
-            s.inline = "bash /vagrant/scripts/serve-hhvm.sh $1 $2"
-            s.args = [site["map"], site["to"]]
+            s.inline = "bash /vagrant/scripts/serve-hhvm.sh $1 $2 \"$3\""
           else
-            s.inline = "bash /vagrant/scripts/serve.sh $1 $2"
-            s.args = [site["map"], site["to"]]
+            s.inline = "bash /vagrant/scripts/serve.sh $1 $2 \"$3\""
           end
       end
     end
