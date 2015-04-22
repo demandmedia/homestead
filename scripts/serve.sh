@@ -5,7 +5,7 @@ block="server {
     server_name $1;
     root "$2";
 
-    index $3;
+    index index.html index.htm index.php;
 
     charset utf-8;
 
