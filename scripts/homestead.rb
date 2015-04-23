@@ -40,7 +40,10 @@ class Homestead
 
     # Register All Of The Configured Shared Folders
     settings["folders"].each do |folder|
-      config.vm.synced_folder folder["map"], folder["to"], type: folder["type"] ||= nil
+      config.vm.synced_folder folder["map"], folder["to"],
+        id: folder["map"],
+    :nfs => true,
+        :mount_options => ['nolock,vers=3,udp,noatime']
     end
 
     # Install All The Configured Nginx Sites
@@ -49,7 +52,7 @@ class Homestead
           s.args = [site["map"], site["to"]]
           if (site.has_key?("index") && site["index"])
             s.args.push(site["index"])
-          else 
+          else
             s.args.push("index.html index.htm index.php")
           end
           if (site.has_key?("hhvm") && site["hhvm"])
